@@ -1,3 +1,4 @@
+const fs = require('fs')
 const opts = {
     lastCell: 'I152',
     from: new Date('2018-12-01'),
@@ -37,8 +38,6 @@ lines.forEach(line => {
         pairs[line[1]][type].push( {date: new Date(date), price: price, total: total} )
     }
 })
-
-//console.log(pairs)
 const trades = []
 Object.keys(pairs).forEach(pair => {
     let trade = {
@@ -68,4 +67,7 @@ let csv = 'START;FINISH;PAIR;AVG-BUY;AVG-SELL;PERF-NO-FEE;GAIN-WITH-FEES\n'
 trades.forEach(t => {
     csv += `${t.START};${t.FINISH};${t.PAIR};${t.AVGBUY};${t.AVGSELL};${t.PERFNOFEE};${t.GAINWITHFEES}\n`
 })
-console.log(csv);
+// console.log(csv)
+csv = csv.replace(/\./g, ',')
+// console.log(csv)
+fs.writeFileSync('./csv.csv', csv, 'utf8')
