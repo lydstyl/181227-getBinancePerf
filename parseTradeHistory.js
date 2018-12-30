@@ -76,10 +76,15 @@ Object.keys(trades).forEach(pair => {
         csvObj[pair].AVGBUY = csvObj[pair].totalBuy / csvObj[pair].buyAmount
         csvObj[pair].AVGSELL = csvObj[pair].totalSell / csvObj[pair].sellAmount
         csvObj[pair].PERFNOFEE = (100 * csvObj[pair].AVGSELL / csvObj[pair].AVGBUY) - 100
-        csvObj[pair].GAINWITHFEES = (csvObj[pair].totalBuy - csvObj[pair].totalSell) * 0.998
+        csvObj[pair].GAINWITHFEES = (csvObj[pair].totalSell - csvObj[pair].totalBuy) * 0.998
     }else{
         delete csvObj[pair]
     }
 })
-console.log(csvObj)
-// START	FINISH	PAIR	AVG-BUY	AVG-SELL	PERF-NO-FEE	GAIN-WITH-FEES
+let csv = 'START;FINISH;PAIR;AVG-BUY;AVG-SELL;PERF-NO-FEE;GAIN-WITH-FEES\n'
+Object.keys(csvObj).forEach(pair => {
+    let t = csvObj[pair]
+    csv += `${t.START};${t.FINISH};${pair};${t.AVGBUY};${t.AVGSELL};${t.PERFNOFEE};${t.GAINWITHFEES}\n`
+})
+csv = csv.replace(/\./g, ',')
+fs.writeFileSync('./csv.csv', csv, 'utf-8')
